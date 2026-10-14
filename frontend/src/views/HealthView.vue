@@ -23,9 +23,12 @@ const fetchHealth = async () => {
     loading.value = true
     error.value = false
     try {
-        const response = await healthApi()
-        data.value = response
+        // healthApi() 返回的**就是响应体**（类型也是 HealthResponse），不要再写 .data
+        const health = await healthApi()
+        data.value = health
     } catch (err) {
+        // 打印出来：否则接口报错时页面只会"安静地空白"，非常难查
+        console.error('获取健康状态失败：', err)
         error.value = true
     } finally {
         loading.value = false
@@ -34,7 +37,7 @@ const fetchHealth = async () => {
 
 onMounted(() => {
     fetchHealth()
-})  
+})
 </script>
 
 <style scoped>

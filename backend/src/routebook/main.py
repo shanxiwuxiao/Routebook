@@ -1,12 +1,13 @@
-import structlog
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from .core.logging import configure_logging
-from collections.abc import AsyncIterator
-from .core.config import settings
 import importlib.metadata
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+import structlog
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from .core.config import settings
+from .core.logging import configure_logging
 
 configure_logging()
 
@@ -14,7 +15,9 @@ logger = structlog.get_logger()
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    # 参数名以下划线开头：M0 还用不到 app.state，ruff 的 ARG001 只忽略这类命名
+
     logger.info("Starting up the application...")
     yield
     logger.info("Shutting down the application...")
